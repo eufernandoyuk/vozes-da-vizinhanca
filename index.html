@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vozes da Vizinhança – Conhecendo e cuidando das árvores do bairro</title>
+<meta name="description" content="Árvores nativas da Mata Atlântica para calçadas, e como funcionam o manejo e a poda. Projeto de extensão UFABC – São Bernardo do Campo.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌳</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8f1; --surface:#ffffff; --ink:#23301f; --muted:#5b6b55;
+  --green:#1f4d3a; --leaf:#e3eddb; --pitanga:#c8302b; --sun:#f2b632; --line:#d5dfcb;
+  --ok:#1f6b45; --no:#a8261f;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#121a14; --surface:#1b261e; --ink:#e8efe2; --muted:#a9b8a2; --green:#8fd1a8; --leaf:#22352a; --line:#2f4435; --ok:#7fd6a0; --no:#ff8f86; color-scheme:dark}
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:12px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;line-height:1.2;color:var(--green);margin:0 0 .5em}
+h1{font-size:clamp(2.4rem,9vw,4.2rem)}
+h2{font-size:clamp(1.6rem,5vw,2.2rem)}
+h3{font-size:1.25rem}
+a{color:var(--green)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.1rem}
+section{padding:2.6rem 0}
+p{max-width:42rem}
+
+/* hero */
+.hero{background:#1f4d3a;color:#f3f7ee;padding:3rem 0 3.2rem;position:relative;overflow:hidden}
+.hero h1{color:#fff;margin-bottom:.3em}
+.hero p{font-size:1.2rem;color:#dbe7d3}
+.scene{position:absolute;inset:0;z-index:0}
+.scene svg{width:100%;height:100%;display:block}
+.scene .photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .4s}
+.scene.has-photo .photo{opacity:1}
+.scene.has-photo svg{opacity:0}
+.scene::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,50,36,.9) 0%,rgba(20,50,36,.65) 60%,rgba(20,50,36,.35) 100%)}
+.hero .wrap{position:relative}
+.nav{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.6rem}
+.nav a{background:#f3f7ee;color:#1f4d3a;text-decoration:none;font-weight:800;padding:.6rem 1rem;border-radius:999px;font-size:.95rem}
+
+/* filtros */
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0 1.4rem}
+.filters button{font:inherit;font-weight:600;border:2px solid var(--green);background:transparent;color:var(--green);padding:.45rem .95rem;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--green);color:var(--bg)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(16.5rem,1fr))}
+.tree{background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c,var(--green));border-radius:6px;padding:1.1rem 1.1rem 1rem}
+.tree{overflow:hidden}
+.tree h3{margin-bottom:.1em}
+.ph{margin:-1.1rem -1.1rem .8rem;aspect-ratio:4/3;background:var(--leaf);overflow:hidden;display:grid;place-items:center}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph.nofoto::before{content:"🌳";font-size:3rem}
+.cr{font-size:.78rem;color:var(--muted);margin:-.4rem 0 .6rem!important}
+.sci{font-style:italic;color:var(--muted);margin:0 0 .6rem;font-size:.95rem}
+.tag{display:inline-block;font-size:.82rem;font-weight:800;padding:.1rem .6rem;border-radius:999px;background:var(--leaf);color:var(--green);margin:0 .3rem .3rem 0}
+.tree p{margin:.3rem 0;font-size:.97rem}
+.tree b{color:var(--green)}
+.note{background:var(--leaf);border-radius:6px;padding:1rem 1.1rem;margin-top:1.4rem;font-size:.97rem}
+
+/* poda */
+.two{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr))}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.2rem}
+.box.ok{border-top:6px solid var(--ok)} .box.no{border-top:6px solid var(--no)}
+.box h3{margin-bottom:.4em}
+.box.ok h3{color:var(--ok)} .box.no h3{color:var(--no)}
+.box ul{margin:0;padding-left:1.2rem}.box li{margin:.35rem 0}
+details{background:var(--surface);border:1px solid var(--line);border-radius:6px;margin:.6rem 0;padding:.2rem 1.1rem}
+summary{cursor:pointer;font-weight:800;padding:.7rem 0;color:var(--green)}
+details p{margin:.2rem 0 .9rem}
+.alt{background:var(--leaf)}
+
+/* canais */
+.channel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:.9rem 1.1rem;margin:.6rem 0}
+.channel strong{color:var(--green)}
+.steps{counter-reset:s;list-style:none;padding:0;max-width:42rem}
+.steps li{counter-increment:s;position:relative;padding-left:2.6rem;margin:.9rem 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--green);color:var(--bg);font-weight:800;display:grid;place-items:center}
+
+/* memória */
+blockquote{margin:0;background:var(--surface);border-left:6px solid var(--pitanga);padding:.9rem 1.1rem;border-radius:0 6px 6px 0;font-family:"Young Serif",Georgia,serif;font-size:1.1rem}
+.quotes{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.btn{display:inline-block;background:var(--pitanga);color:#fff;text-decoration:none;font-weight:800;padding:.8rem 1.3rem;border-radius:999px;margin:.4rem .5rem .4rem 0}
+.btn.alt2{background:var(--green);color:var(--bg)}
+footer{background:#1f4d3a;color:#dbe7d3;padding:2rem 0;font-size:.92rem}
+footer a{color:#fff}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="scene" id="scene" aria-hidden="true">
+    <svg viewBox="0 0 800 420" preserveAspectRatio="xMaxYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="800" height="420" fill="#2a6a4d"/>
+      <circle cx="650" cy="85" r="55" fill="#f2b632" opacity=".9"/>
+      <rect y="235" width="800" height="185" fill="#2f7352"/>
+      <polygon points="150,420 265,420 396,236 362,236" fill="#9bbba5" opacity=".55"/>
+      <polygon points="535,420 650,420 438,236 404,236" fill="#9bbba5" opacity=".55"/>
+      <polygon points="265,420 535,420 408,236 392,236" fill="#16382a"/>
+      <g stroke="#f3f7ee" stroke-width="3" opacity=".6"><line x1="400" y1="250" x2="400" y2="268"/><line x1="400" y1="290" x2="400" y2="320"/><line x1="400" y1="350" x2="400" y2="400"/></g>
+      <g fill="#5a3d2b"><rect x="342" y="236" width="6" height="34"/><rect x="455" y="236" width="6" height="34"/><rect x="278" y="282" width="10" height="56"/><rect x="513" y="282" width="10" height="56"/><rect x="172" y="320" width="18" height="100"/><rect x="615" y="320" width="18" height="100"/></g>
+      <circle cx="345" cy="222" r="26" fill="#57a870"/><circle cx="458" cy="222" r="26" fill="#f2b632"/>
+      <circle cx="283" cy="248" r="44" fill="#7b3fa0"/><circle cx="518" cy="248" r="44" fill="#3f8f5f"/>
+      <circle cx="181" cy="250" r="78" fill="#3f8f5f"/><circle cx="624" cy="250" r="78" fill="#c8302b"/>
+      <circle cx="150" cy="275" r="46" fill="#57a870"/><circle cx="655" cy="275" r="46" fill="#57a870"/>
+    </svg>
+    <div class="photo"></div>
+  </div>
+  <div class="wrap">
+    <h1>Vozes da Vizinhança</h1>
+    <p>Conhecendo e cuidando das árvores do bairro. Aqui você descobre quais árvores nativas combinam com calçadas, o que é uma poda correta e a quem pedir ajuda.</p>
+    <nav class="nav" aria-label="Seções do site">
+      <a href="#arvores">Árvores nativas</a>
+      <a href="#poda">Poda</a>
+      <a href="#canais">Como pedir serviço</a>
+      <a href="#memoria">Memórias</a>
+      <a href="#participe">Participe</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section id="arvores">
+  <div class="wrap">
+    <h2>Árvores nativas da Mata Atlântica para calçadas e praças</h2>
+    <p>Escolher a árvore certa para o lugar certo evita raízes que quebram o piso, galhos na fiação e podas drásticas no futuro. Filtre pelo espaço que você tem.</p>
+
+    <div class="filters" role="group" aria-label="Filtrar por porte">
+      <button type="button" data-f="todas" aria-pressed="true">Todas</button>
+      <button type="button" data-f="pequeno" aria-pressed="false">Pequeno porte (calçada estreita, sob fiação)</button>
+      <button type="button" data-f="medio" aria-pressed="false">Médio porte</button>
+      <button type="button" data-f="grande" aria-pressed="false">Grande porte (praças e calçadas largas)</button>
+    </div>
+
+    <div class="grid" id="lista" aria-live="polite"></div>
+
+    <div class="note">
+      <b>Importante:</b> as alturas são aproximadas e variam com o solo, o clima e o manejo. Árvore em calçada precisa de espaço livre para raiz e copa (canteiro permeável, afastamento de postes, esquinas e entradas de garagem). Plantar em área pública deve seguir a orientação da Prefeitura; consulte antes de plantar.
+    </div>
+  </div>
+</section>
+
+<section id="poda" class="alt">
+  <div class="wrap">
+    <h2>Poda: o que ajuda e o que machuca a árvore</h2>
+    <p>Podar não é cortar tudo. Uma poda bem feita é leve, planejada e feita por profissional habilitado. A poda drástica deixa a árvore fraca, mais sujeita a pragas, cupins e queda, e ainda gera brotações frágeis que logo voltam a atrapalhar.</p>
+
+    <div class="two">
+      <div class="box ok">
+        <h3>Poda adequada</h3>
+        <ul>
+          <li>Retira poucos galhos, em geral os secos, doentes, quebrados ou que cruzam e se atritam.</li>
+          <li>Corta rente ao “colar” do galho, sem deixar toco comprido.</li>
+          <li>Preserva a forma natural e a maior parte da copa.</li>
+          <li>É feita por equipe técnica, com planejamento e equipamento de segurança.</li>
+        </ul>
+      </div>
+      <div class="box no">
+        <h3>Poda drástica (mutiladora)</h3>
+        <ul>
+          <li>Corta o tronco ou os galhos principais, deixando só “tocos”.</li>
+          <li>Remove grande parte da copa de uma só vez.</li>
+          <li>Abre feridas grandes, porta de entrada para fungos e cupins.</li>
+          <li>É feita sem avaliação técnica, às vezes por vizinhos ou terceiros sem autorização.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-top:1.8rem">Tipos de manejo</h3>
+    <details>
+      <summary>Poda de formação (árvore jovem)</summary>
+      <p>Orienta o crescimento desde cedo: um tronco principal reto, galhos bem distribuídos e primeira ramificação alta o bastante para a passagem de pedestres. Feita bem no começo, evita cortes grandes depois.</p>
+    </details>
+    <details>
+      <summary>Poda de condução e manutenção</summary>
+      <p>Retoques periódicos e leves para manter a árvore saudável e equilibrada, acompanhando o crescimento ao longo dos anos.</p>
+    </details>
+    <details>
+      <summary>Poda de limpeza</summary>
+      <p>Retirada de galhos secos, doentes, quebrados ou infestados, para reduzir o risco de queda e a propagação de problemas.</p>
+    </details>
+    <details>
+      <summary>Desobstrução (placas, iluminação, passagem)</summary>
+      <p>Retirada pontual de galhos que cobrem sinalização, postes ou invadem a passagem. É um corte localizado, não uma redução geral da copa.</p>
+    </details>
+    <details>
+      <summary>Árvores perto da fiação elétrica</summary>
+      <p>Não mexa nos galhos próximos aos fios. Existe risco de choque e a poda perto de rede energizada só pode ser feita por equipe autorizada. Acione a concessionária de energia e a Prefeitura pelos canais oficiais.</p>
+    </details>
+    <details>
+      <summary>Retirada de árvore</summary>
+      <p>Em via e espaço públicos, a retirada depende de avaliação e autorização do poder público, em geral por vistoria técnica que verifica risco, doença ou conflito com obras. Cortar árvore pública por conta própria é irregular.</p>
+    </details>
+    <details>
+      <summary>Árvore com cupim ou com risco de queda?</summary>
+      <p>Cupins sozinhos nem sempre significam que a árvore está condenada. Solicite uma vistoria fitossanitária: um técnico avalia a estrutura e decide o que fazer.</p>
+    </details>
+  </div>
+</section>
+
+<section id="canais">
+  <div class="wrap">
+    <h2>Como pedir poda, vistoria ou avaliação</h2>
+    <p>Os serviços de arborização em vias e praças são de responsabilidade do município. Use os canais oficiais e guarde o número do protocolo.</p>
+
+    <ol class="steps">
+      <li><b>Anote o endereço exato</b> e a referência mais próxima (número do imóvel, poste, esquina).</li>
+      <li><b>Tire fotos</b> da árvore inteira e do problema (galho seco, inclinação, fiação, raiz).</li>
+      <li><b>Abra a solicitação</b> pelo canal oficial da Prefeitura de São Bernardo do Campo e peça poda, vistoria técnica ou avaliação da árvore.</li>
+      <li><b>Guarde o protocolo</b> e acompanhe o andamento.</li>
+      <li><b>Se houver fios envolvidos,</b> avise também a concessionária de energia.</li>
+    </ol>
+
+    <!-- EDITE AQUI: confirme os canais oficiais atuais da Prefeitura e preencha. -->
+    <div class="channel"><strong>Prefeitura de São Bernardo do Campo</strong><span>[Preencher: telefone / site / aplicativo oficial de zeladoria urbana]</span></div>
+    <div class="channel"><strong>Concessionária de energia (árvores na fiação)</strong><span>[Preencher: telefone / canal da concessionária local]</span></div>
+    <div class="channel"><strong>Emergência (árvore caída ou risco imediato)</strong><span>[Preencher: Defesa Civil / Bombeiros, ex.: 193 – confirme]</span></div>
+  </div>
+</section>
+
+<section id="memoria" class="alt">
+  <div class="wrap">
+    <h2>Memórias da vizinhança</h2>
+    <p>Estes relatos anônimos foram coletados em conversas com moradores e frequentadores. As árvores guardam histórias.</p>
+    <div class="quotes">
+      <blockquote>“Me escondia da minha mãe em um pé de pitangueira. O pé fica dentro da praça.”</blockquote>
+      <blockquote>“De quando os filhos brincavam no bairro entre as inúmeras árvores presentes.”</blockquote>
+      <blockquote>“Filha colhendo frutinhas.”</blockquote>
+      <blockquote>“Derrubaram uma árvore que gostava muito.”</blockquote>
+    </div>
+  </div>
+</section>
+
+<section id="participe">
+  <div class="wrap">
+    <h2>Participe</h2>
+    <p>Tem dúvida sobre uma árvore, uma foto de espécie que você quer identificar ou uma lembrança para compartilhar? Fale com a equipe e conte também como foi a nossa conversa.</p>
+    <!-- EDITE AQUI: troque os # pelos links reais -->
+    <a class="btn" href="#" id="lnkWhats" rel="noopener">Enviar dúvida ou foto no WhatsApp</a>
+    <a class="btn alt2" href="#" id="lnkInsta" rel="noopener">Falar pelo Instagram</a>
+    <a class="btn alt2" href="#" id="lnkForm" rel="noopener">Avaliar a atividade (1 minuto)</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Vozes da Vizinhança</b> – ação de extensão da disciplina NHBB005-23 (Ações extensionistas em Botânica), UFABC, campus São Bernardo do Campo. Bairros: Jardim Copacabana, Jardim Antares, Jardim Hollywood e Anchieta.</p>
+    <p>As informações têm caráter educativo e não substituem a avaliação técnica de um engenheiro agrônomo, florestal ou biólogo habilitado.</p>
+  </div>
+</footer>
+
+<script>
+var ARVORES = [
+  {n:"Pitangueira", s:"Eugenia uniflora", p:"pequeno", h:"4 a 6 m", c:"#c8302b",
+   t:["Frutos comestíveis","Atrai pássaros"],
+   d:"Pequena, de copa arredondada e frutos vermelhos adorados pela fauna e pelas pessoas. Cabe sob fiação e em calçadas mais estreitas, desde que haja canteiro.",
+   a:"Frutos caídos podem sujar o piso; prefira local com canteiro."},
+  {n:"Grumixama", s:"Eugenia brasiliensis", p:"pequeno", h:"5 a 8 m", c:"#6b2d5c",
+   t:["Frutos comestíveis","Atrai fauna"],
+   d:"Copa piramidal, flores brancas e frutos roxo-escuros. Boa opção para praças e calçadas com espaço para a copa.",
+   a:"Cresce devagar; frutos também caem no piso."},
+  {n:"Cambuci", s:"Campomanesia phaea", p:"pequeno", h:"3 a 6 m", c:"#6a8f3a",
+   t:["Frutos comestíveis","Espécie ameaçada"],
+   d:"Árvore símbolo de São Paulo, de porte pequeno e frutos ácidos usados em doces e bebidas. Boa para canteiros e praças.",
+   a:"Prefira mudas de viveiros regularizados."},
+  {n:"Pata-de-vaca", s:"Bauhinia forficata", p:"pequeno", h:"5 a 9 m", c:"#d98aa5",
+   t:["Flores brancas","Atrai polinizadores"],
+   d:"Folhas em forma de duas “patinhas” e flores brancas grandes. Crescimento rápido, muito usada em arborização urbana.",
+   a:"Algumas plantas têm espinhos pequenos nos ramos jovens; conduza desde cedo."},
+  {n:"Quaresmeira", s:"Pleroma granulosum (Tibouchina granulosa)", p:"medio", h:"8 a 12 m", c:"#7b3fa0",
+   t:["Flores roxas","Atrai abelhas"],
+   d:"Floração roxa intensa duas vezes ao ano. Muito comum nas cidades, de crescimento relativamente rápido e raízes pouco agressivas.",
+   a:"Pode passar da altura da fiação; prefira calçadas sem rede aérea baixa."},
+  {n:"Manacá-da-serra", s:"Pleroma mutabile (Tibouchina mutabilis)", p:"medio", h:"6 a 10 m", c:"#d9a0c8",
+   t:["Flores que mudam de cor","Atrai fauna"],
+   d:"Flores que passam do branco ao rosa e ao lilás. Cresce rápido e embeleza ruas e praças.",
+   a:"Vida mais curta que outras nativas; acompanhe a saúde da árvore."},
+  {n:"Pau-brasil", s:"Paubrasilia echinata", p:"medio", h:"8 a 12 m (até 20 m em área aberta)", c:"#b8452a",
+   t:["Árvore-símbolo do Brasil","Flores amarelas"],
+   d:"Espécie histórica, nativa da Mata Atlântica e ameaçada de extinção. Flores amarelas perfumadas e tronco com espinhos na juventude. Ótima para praças e calçadas largas.",
+   a:"Tronco jovem pode ter espinhos; indicado para locais de pouca circulação encostada."},
+  {n:"Ipê-amarelo", s:"Handroanthus spp. (ex.: H. chrysotrichus)", p:"grande", h:"8 a 15 m (conforme a espécie)", c:"#f2b632",
+   t:["Floração amarela","Atrai polinizadores"],
+   d:"Floração amarela exuberante no fim do inverno. Espécies de menor porte servem para calçadas largas; as maiores ficam melhor em praças e parques.",
+   a:"Precisa de espaço para a copa e para a raiz; não plantar sob fiação."}
+];
+
+var lista = document.getElementById('lista');
+var rot = {pequeno:"Pequeno porte", medio:"Médio porte", grande:"Grande porte"};
+function slug(t){return t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-');}
+/* EDITE AQUI: créditos das fotos (obrigatório em muitas licenças). Chave = nome do arquivo sem .jpg */
+var CREDITOS = {
+  // "pitangueira": "Foto: Nome do autor / Wikimedia Commons / CC BY-SA 4.0",
+};
+
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function render(f){
+  lista.innerHTML = ARVORES.filter(function(a){return f==='todas'||a.p===f;}).map(function(a){
+    var sl = slug(a.n);
+    return '<article class="tree" style="--c:'+a.c+'">'+
+      '<div class="ph"><img src="img/'+sl+'.jpg" alt="'+esc(a.n)+' ('+esc(a.s)+')" loading="lazy" onerror="this.parentNode.classList.add(\'nofoto\');this.remove()"></div>'+
+      (CREDITOS[sl] ? '<p class="cr">'+esc(CREDITOS[sl])+'</p>' : '')+
+      '<h3>'+esc(a.n)+'</h3><p class="sci">'+esc(a.s)+'</p>'+
+      '<span class="tag">'+rot[a.p]+'</span><span class="tag">'+esc(a.h)+'</span>'+
+      a.t.map(function(x){return '<span class="tag">'+esc(x)+'</span>';}).join('')+
+      '<p>'+esc(a.d)+'</p><p><b>Atenção:</b> '+esc(a.a)+'</p></article>';
+  }).join('');
+}
+render('todas');
+
+/* foto de capa opcional: img/capa.jpg */
+(function(){
+  var im = new Image();
+  im.onload = function(){
+    var sc = document.getElementById('scene');
+    sc.querySelector('.photo').style.backgroundImage = "url('img/capa.jpg')";
+    sc.classList.add('has-photo');
+  };
+  im.src = 'img/capa.jpg';
+})();
+
+document.querySelectorAll('.filters button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.filters button').forEach(function(x){x.setAttribute('aria-pressed','false');});
+    b.setAttribute('aria-pressed','true');
+    render(b.getAttribute('data-f'));
+  });
+});
+
+/* EDITE AQUI: coloque seus links reais */
+var LINKS = {
+  whats: "https://wa.me/55SEUNUMEROCOMDDD",
+  insta: "https://instagram.com/SEUPERFIL",
+  form:  "https://forms.gle/SEULINK"
+};
+document.getElementById('lnkWhats').href = LINKS.whats;
+document.getElementById('lnkInsta').href = LINKS.insta;
+document.getElementById('lnkForm').href = LINKS.form;
+</script>
+</body>
+</html>
