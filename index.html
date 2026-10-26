@@ -201,7 +201,7 @@ footer a{color:#fff}
     </details>
     <details>
       <summary>Árvores perto da fiação elétrica</summary>
-      <p>Não mexa nos galhos próximos aos fios. Existe risco de choque e a poda perto de rede energizada só pode ser feita por equipe autorizada. Acione a concessionária de energia e a Prefeitura pelos canais oficiais.</p>
+      <p>Não mexa nos galhos próximos aos fios. Existe risco de choque e a poda perto de rede energizada só pode ser feita por equipe autorizada. A Enel só poda onde os galhos estão perto ou encostando na rede, com autorização da prefeitura. Se houver risco de acidente elétrico, ligue para a Enel (0800 72 72 196). Para pedir a poda, use o Guia de Serviços da Prefeitura.</p>
     </details>
     <details>
       <summary>Retirada de árvore</summary>
@@ -222,15 +222,16 @@ footer a{color:#fff}
     <ol class="steps">
       <li><b>Anote o endereço exato</b> e a referência mais próxima (número do imóvel, poste, esquina).</li>
       <li><b>Tire fotos</b> da árvore inteira e do problema (galho seco, inclinação, fiação, raiz).</li>
-      <li><b>Abra a solicitação</b> pelo canal oficial da Prefeitura de São Bernardo do Campo e peça poda, vistoria técnica ou avaliação da árvore.</li>
+      <li><b>Abra a solicitação</b> pelo Guia de Serviços da Prefeitura de São Bernardo do Campo (link abaixo) e peça a poda ou a avaliação da árvore.</li>
       <li><b>Guarde o protocolo</b> e acompanhe o andamento.</li>
-      <li><b>Se houver fios envolvidos,</b> avise também a concessionária de energia.</li>
+      <li><b>Se os galhos estiverem perto ou encostando nos fios,</b> avise também a Enel. Em caso de risco de acidente elétrico, use o telefone de emergência abaixo.</li>
     </ol>
 
-    <!-- EDITE AQUI: confirme os canais oficiais atuais da Prefeitura e preencha. -->
-    <div class="channel"><strong>Prefeitura de São Bernardo do Campo</strong><span>[Preencher: telefone / site / aplicativo oficial de zeladoria urbana]</span></div>
-    <div class="channel"><strong>Concessionária de energia (árvores na fiação)</strong><span>[Preencher: telefone / canal da concessionária local]</span></div>
-    <div class="channel"><strong>Emergência (árvore caída ou risco imediato)</strong><span>[Preencher: Defesa Civil / Bombeiros, ex.: 193 – confirme]</span></div>
+    <div class="channel"><strong>Pedir poda de árvore em rua, calçada ou praça</strong><span><a href="https://guiadeservicos.saobernardo.sp.gov.br/guia-de-servicos/servicos/211333/mostrar" target="_blank" rel="noopener">Guia de Serviços da Prefeitura de São Bernardo do Campo</a></span></div>
+    <div class="channel"><strong>Meio ambiente e arborização: Secretaria de Meio Ambiente (SEMAS)</strong><span><a href="https://www.saobernardo.sp.gov.br/semas" target="_blank" rel="noopener">Site da SEMAS – São Bernardo do Campo</a></span></div>
+    <div class="channel"><strong>Galhos nos fios ou risco de acidente elétrico (Enel)</strong><span><a href="tel:08007272196">0800 72 72 196</a> · <a href="https://www.enel.com.br/pt-saopaulo/midia/news/d202411-Podas-Sao-Paulo.html" target="_blank" rel="noopener">saiba mais</a></span></div>
+    <div class="channel"><strong>Emergência: árvore caída ou risco imediato (Bombeiros)</strong><span><a href="tel:193">193</a></span></div>
+    <p class="note" style="max-width:42rem">A Enel só poda onde os galhos estão perto ou encostando na rede de energia, e com autorização da prefeitura. Os pedidos de poda em geral devem ser feitos à Prefeitura.</p>
   </div>
 </section>
 
@@ -251,10 +252,9 @@ footer a{color:#fff}
   <div class="wrap">
     <h2>Participe</h2>
     <p>Tem dúvida sobre uma árvore, uma foto de espécie que você quer identificar ou uma lembrança para compartilhar? Fale com a equipe e conte também como foi a nossa conversa.</p>
-    <!-- EDITE AQUI: troque os # pelos links reais -->
-    <a class="btn" href="#" id="lnkWhats" rel="noopener">Enviar dúvida ou foto no WhatsApp</a>
-    <a class="btn alt2" href="#" id="lnkInsta" rel="noopener">Falar pelo Instagram</a>
-    <a class="btn alt2" href="#" id="lnkForm" rel="noopener">Avaliar a atividade (1 minuto)</a>
+    <!-- EDITE AQUI: troque pelo seu usuário do Telegram e pelo e-mail real (veja LINKS no final do arquivo) -->
+    <a class="btn" href="#" id="lnkTelegram" target="_blank" rel="noopener">Enviar dúvida ou foto no Telegram</a>
+    <a class="btn alt2" href="#" id="lnkEmail"></a>
 
     <div class="rating" id="rating" hidden>
       <h3>Que nota você dá para este site?</h3>
@@ -354,13 +354,13 @@ document.querySelectorAll('.filters button').forEach(function(b){
 
 /* EDITE AQUI: coloque seus links reais */
 var LINKS = {
-  whats: "https://wa.me/55SEUNUMEROCOMDDD",
-  insta: "https://instagram.com/SEUPERFIL",
-  form:  "https://forms.gle/SEULINK"
+  telegram: "https://t.me/SEUUSUARIO",
+  email: "contato.vozesdavizinhanca@example.com"
 };
-document.getElementById('lnkWhats').href = LINKS.whats;
-document.getElementById('lnkInsta').href = LINKS.insta;
-document.getElementById('lnkForm').href = LINKS.form;
+document.getElementById('lnkTelegram').href = LINKS.telegram;
+var em = document.getElementById('lnkEmail');
+em.href = 'mailto:' + LINKS.email;
+em.textContent = 'Escrever para ' + LINKS.email;
 
 /* EDITE AQUI: cole o endereço do Google Apps Script (termina em /exec). Vazio = avaliação oculta. */
 var NOTAS_URL = "https://script.google.com/macros/s/AKfycbwijN8B-lWJtk1wHS6ueyuQgamKFHLPjpPRd3Cpc6nlm2X6JPsikNt6Pivg-k52mTEw/exec";
