@@ -89,6 +89,14 @@ blockquote{margin:0;background:var(--surface);border-left:6px solid var(--pitang
 .quotes{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
 .btn{display:inline-block;background:var(--pitanga);color:#fff;text-decoration:none;font-weight:800;padding:.8rem 1.3rem;border-radius:999px;margin:.4rem .5rem .4rem 0}
 .btn.alt2{background:var(--green);color:var(--bg)}
+.rating{margin-top:1.8rem;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.2rem;max-width:30rem}
+.rating h3{font-size:1.15rem}
+.stars{display:flex;gap:.1rem;margin:.2rem 0 .4rem}
+.stars button{font-size:2.3rem;line-height:1;background:none;border:0;cursor:pointer;color:var(--muted);opacity:.4;padding:.1rem .15rem}
+.stars button.on{color:var(--sun);opacity:1}
+.stars.done button{cursor:default}
+.rmsg{min-height:1.4em;margin:.2rem 0;color:var(--muted);font-size:.95rem}
+.ravg{margin:.2rem 0 0;font-weight:800;color:var(--green)}
 footer{background:#1f4d3a;color:#dbe7d3;padding:2rem 0;font-size:.92rem}
 footer a{color:#fff}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -247,6 +255,13 @@ footer a{color:#fff}
     <a class="btn" href="#" id="lnkWhats" rel="noopener">Enviar dúvida ou foto no WhatsApp</a>
     <a class="btn alt2" href="#" id="lnkInsta" rel="noopener">Falar pelo Instagram</a>
     <a class="btn alt2" href="#" id="lnkForm" rel="noopener">Avaliar a atividade (1 minuto)</a>
+
+    <div class="rating" id="rating" hidden>
+      <h3>Que nota você dá para este site?</h3>
+      <div class="stars" id="stars" role="group" aria-label="Nota de 1 a 5 estrelas"></div>
+      <p class="rmsg" id="rmsg" aria-live="polite"></p>
+      <p class="ravg" id="ravg"></p>
+    </div>
   </div>
 </section>
 </main>
@@ -346,6 +361,48 @@ var LINKS = {
 document.getElementById('lnkWhats').href = LINKS.whats;
 document.getElementById('lnkInsta').href = LINKS.insta;
 document.getElementById('lnkForm').href = LINKS.form;
+
+/* EDITE AQUI: cole o endereço do Google Apps Script (termina em /exec). Vazio = avaliação oculta. */
+var NOTAS_URL = "https://script.google.com/macros/s/AKfycbwijN8B-lWJtk1wHS6ueyuQgamKFHLPjpPRd3Cpc6nlm2X6JPsikNt6Pivg-k52mTEw/exec";
+
+(function(){
+  if (!NOTAS_URL) return;
+  var box = document.getElementById('rating'); box.hidden = false;
+  var wrap = document.getElementById('stars'), msg = document.getElementById('rmsg'), avg = document.getElementById('ravg');
+  var btns = [], travado = false;
+
+  function pintar(n){ btns.forEach(function(b,i){ b.classList.toggle('on', i < n); }); }
+  function mostrar(d){
+    if (d && d.total > 0) {
+      avg.textContent = 'Média: ' + Number(d.media).toFixed(1).replace('.', ',') + ' de 5 (' + d.total + (d.total === 1 ? ' avaliação)' : ' avaliações)');
+    } else { avg.textContent = 'Seja a primeira pessoa a avaliar.'; }
+  }
+  function travar(n){ travado = true; wrap.classList.add('done'); pintar(n); }
+  function enviar(n){
+    msg.textContent = 'Enviando...';
+    fetch(NOTAS_URL + '?nota=' + n).then(function(r){return r.json();}).then(function(d){
+      mostrar(d); travar(n); msg.textContent = 'Obrigado pela sua avaliação!';
+      try { localStorage.setItem('vv_nota', String(n)); } catch(e) {}
+    }).catch(function(){ msg.textContent = 'Não foi possível enviar agora. Tente de novo mais tarde.'; });
+  }
+
+  for (var i = 1; i <= 5; i++) (function(n){
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = '★';
+    b.setAttribute('aria-label', n + (n === 1 ? ' estrela' : ' estrelas'));
+    b.addEventListener('mouseenter', function(){ if(!travado) pintar(n); });
+    b.addEventListener('focus', function(){ if(!travado) pintar(n); });
+    b.addEventListener('click', function(){ if(!travado) enviar(n); });
+    wrap.appendChild(b); btns.push(b);
+  })(i);
+  wrap.addEventListener('mouseleave', function(){ if(!travado) pintar(0); });
+
+  var antes = 0;
+  try { antes = parseInt(localStorage.getItem('vv_nota'), 10) || 0; } catch(e) {}
+  if (antes) { travar(antes); msg.textContent = 'Você já avaliou. Obrigado!'; }
+
+  fetch(NOTAS_URL).then(function(r){return r.json();}).then(mostrar).catch(function(){ avg.textContent = ''; });
+})();
 </script>
 </body>
 </html>
