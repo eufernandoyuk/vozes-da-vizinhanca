@@ -251,10 +251,7 @@ footer a{color:#fff}
 <section id="participe">
   <div class="wrap">
     <h2>Participe</h2>
-    <p>Tem dúvida sobre uma árvore, uma foto de espécie que você quer identificar ou uma lembrança para compartilhar? Fale com a equipe e conte também como foi a nossa conversa.</p>
-    <!-- EDITE AQUI: troque pelo seu usuário do Telegram e pelo e-mail real (veja LINKS no final do arquivo) -->
-    <a class="btn" href="#" id="lnkTelegram" target="_blank" rel="noopener">Enviar dúvida ou foto no Telegram</a>
-    <a class="btn alt2" href="#" id="lnkEmail"></a>
+    <p>Sua opinião ajuda a melhorar este site. Conte para nós, com uma nota de 1 a 5 estrelas, o que você achou.</p>
 
     <div class="rating" id="rating" hidden>
       <h3>Que nota você dá para este site?</h3>
@@ -352,15 +349,6 @@ document.querySelectorAll('.filters button').forEach(function(b){
   });
 });
 
-/* EDITE AQUI: coloque seus links reais */
-var LINKS = {
-  telegram: "https://t.me/SEUUSUARIO",
-  email: "contato.vozesdavizinhanca@example.com"
-};
-document.getElementById('lnkTelegram').href = LINKS.telegram;
-var em = document.getElementById('lnkEmail');
-em.href = 'mailto:' + LINKS.email;
-em.textContent = 'Escrever para ' + LINKS.email;
 
 /* EDITE AQUI: cole o endereço do Google Apps Script (termina em /exec). Vazio = avaliação oculta. */
 var NOTAS_URL = "https://script.google.com/macros/s/AKfycbwijN8B-lWJtk1wHS6ueyuQgamKFHLPjpPRd3Cpc6nlm2X6JPsikNt6Pivg-k52mTEw/exec";
